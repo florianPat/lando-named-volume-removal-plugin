@@ -1,0 +1,37 @@
+name: Run Unit Tests
+
+on:
+  pull_request:
+
+jobs:
+  unit-tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - windows-2022
+          - ubuntu-22.04
+          - macos-12
+        node-version:
+          - '18'
+    steps:
+      # Install deps and cache
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - name: Install NPM dependencies
+        run: npm clean-install --prefer-offline --frozen-lockfile
+      - name: Bundle Deps
+        uses: lando/prepare-release-action@v3
+        with:
+          lando-plugin: true
+          version: dev
+          sync: false
+
+      # Run unit tests
+      - name: Run unit tests
+        run: npm run test:unit

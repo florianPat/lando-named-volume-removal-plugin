@@ -1,0 +1,51 @@
+name: PHP 8 Tests
+
+on:
+  pull_request:
+
+jobs:
+  leia-tests:
+    runs-on: ${{ matrix.os }}
+    env:
+      TERM: xterm
+    strategy:
+      fail-fast: false
+      matrix:
+        lando-version:
+          - 3-dev-slim
+        os:
+          - ubuntu-22.04
+        node-version:
+          - '18'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: https://registry.npmjs.org
+          cache: npm
+      - name: Install NPM dependencies
+        run: npm clean-install --production --prefer-offline --frozen-lockfile
+      - name: Bundle Deps
+        uses: lando/prepare-release-action@v3
+        with:
+          lando-plugin: true
+          version: dev
+          sync: false
+      - name: Setup lando ${{ matrix.lando-version }}
+        uses: lando/setup-lando@v3
+        with:
+          lando-version: ${{ matrix.lando-version }}
+          config: |
+            setup.skipCommonPlugins=true
+            setup.plugins.@florianPat/lando-plugin-named-volume-removal=/home/runner/work/named-volume-removal-plugin
+          telemetry: false
+      - name: Run Leia Tests
+        uses: lando/run-leia-action@v2
+        with:
+          leia-test: "./examples/**/README.md"
+          cleanup-header: "Destroy tests"
+          shell: bash
+          stdin: true
