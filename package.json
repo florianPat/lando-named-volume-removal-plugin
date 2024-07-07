@@ -1,5 +1,5 @@
 {
-  "name": "@florianPat/lando-plugin-named-volume-removal",
+  "name": "@florianpat/lando-plugin-named-volume-removal",
   "description": "A lando plugins which removes named volumes from the docker compose file to be compatible with bitbucket pipelines",
   "version": "0.0.1",
   "author": "Florian Patruck @florianPat",
@@ -15,7 +15,7 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint . --ext .js --ext .mjs",
     "test:unit": "nyc --reporter=html --reporter=text mocha --timeout 5000 test/**/*.spec.js",
-    "test:leia": "npm run leia \"examples/**/README.md\" -c 'Destroy tests' --stdin",
+    "test:leia": "leia \"examples/**/README.md\" -c 'Destroy tests' --stdin",
     "test": "npm run lint && npm run test:unit"
   },
   "dependencies": {
@@ -30,6 +30,6 @@
     "eslint-config-google": "^0.9.1",
     "eslint-plugin-vue": "^8.0.3",
     "mocha": "^9.1.2",
-    "nyc": "^15.1.0",
+    "nyc": "^15.1.0"
   }
 }

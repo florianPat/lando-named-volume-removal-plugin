@@ -3,3 +3,5 @@ docs
 examples
 guides
 test
+.nyc_output
+coverage

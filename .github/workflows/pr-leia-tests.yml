@@ -1,4 +1,4 @@
-name: PHP 8 Tests
+name: Run Leia Tests
 
 on:
   pull_request:
@@ -39,7 +39,6 @@ jobs:
         with:
           lando-version: ${{ matrix.lando-version }}
           config: |
-            setup.skipCommonPlugins=true
             setup.plugins.@florianPat/lando-plugin-named-volume-removal=/home/runner/work/named-volume-removal-plugin
           telemetry: false
       - name: Run Leia Tests
