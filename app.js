@@ -5,7 +5,7 @@ const _ = require('lodash');
 module.exports = (app, lando) => {
   // 9 because after all the plugins and core stuff and before the lando info generation
   // note that the proxy plugin loads itself into the mix in 'pre-start'... thats ok through, because it does not use any named volumes
-  app.events.on('post-init', 9, app => {
+  app.events.on('post-init', 9, () => {
     const namedVolumes = [];
 
     for (const composeData of Object.values(app.composeData)) {
