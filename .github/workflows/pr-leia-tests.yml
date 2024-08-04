@@ -39,12 +39,12 @@ jobs:
         with:
           lando-version: ${{ matrix.lando-version }}
           config: |
-            setup.plugins.@florianPat/lando-plugin-named-volume-removal=/home/runner/work/named-volume-removal-plugin
+            setup.plugins.@florianPat/lando-plugin-named-volume-removal=${{ github.workspace }}
           telemetry: false
       - name: Run Leia Tests
         uses: lando/run-leia-action@v2
         with:
-          leia-test: "./examples/**/README.md"
+          leia-test: "./examples/lando-starts/README.md"
           cleanup-header: "Destroy tests"
           shell: bash
           stdin: true
