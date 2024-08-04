@@ -1,7 +1,5 @@
 'use strict';
 
-const {isFunction} = require('lodash');
-
 // Setup chai.
 const chai = require('chai');
 const expect = chai.expect;
@@ -14,10 +12,8 @@ describe('plugin', () => {
     const app = {
       events: {
         on: (event, priority, callback) => {
-          if (isFunction(priority)) {
-            priority(app);
-            return;
-          }
+          expect(event).to.equal('post-init');
+          expect(priority).to.equal(9);
           callback(app);
         },
       },
@@ -187,10 +183,19 @@ describe('plugin', () => {
       },
     };
 
-    plugin(app, {
+    const lando = {
+      events: {
+        on: (event, callback) => {
+          expect(event).to.equal('pre-engine-start');
+          callback({});
+          callback({project: 'proxy', compose: []});
+        },
+      },
       config: {home: '/home/florain', proxyName: 'proxy', userConfRoot: '/home/florain/.lando'},
       utils: {loadComposeFiles: () => {}, dumpComposeData: () => {}},
-    });
+    };
+
+    plugin(app, lando);
     expect(app.composeData['LampPhp'].data[2].volumes).to.eql({});
     expect(app.composeData['LampPhp'].data[2].services.appserver.volumes).to.eql([
       '/home/florain/.lando:/lando:cached',

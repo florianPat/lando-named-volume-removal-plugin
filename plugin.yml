@@ -1,0 +1,2 @@
+# Let lando autoscan this plugin for "legacy" plugin stuff needed for v3
+legacy: true

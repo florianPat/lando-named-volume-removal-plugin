@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const path = require('path');
 
 const removeNamedVolume = (composeDataIn, home, userConfRoot) => {
   const namedVolumes = [];
@@ -41,13 +42,13 @@ module.exports = (app, lando) => {
     removeNamedVolume(app.composeData, lando.config.home, lando.config.userConfRoot);
   });
 
-  app.events.on('pre-engine-start', data => {
+  lando.events.on('pre-engine-start', async data => {
     if (data.project !== lando.config.proxyName) {
       return;
     }
 
-    const proxyData = lando.utils.loadComposeFiles(data.compose);
+    const proxyData = await lando.utils.loadComposeFiles(data.compose);
     removeNamedVolume({proxy: {data: proxyData}}, lando.config.home, lando.config.userConfRoot);
-    lando.utils.dumpComposeData(proxyData, path.join(lando.config.userConfRoot, 'proxy'));
+    lando.utils.dumpComposeData({id: 'proxy', data: proxyData}, path.join(lando.config.userConfRoot, 'proxy'));
   });
 };
