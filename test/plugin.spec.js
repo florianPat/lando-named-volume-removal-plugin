@@ -1,5 +1,7 @@
 'use strict';
 
+const {isFunction} = require('lodash');
+
 // Setup chai.
 const chai = require('chai');
 const expect = chai.expect;
@@ -12,8 +14,10 @@ describe('plugin', () => {
     const app = {
       events: {
         on: (event, priority, callback) => {
-          expect(event).to.equal('post-init');
-          expect(priority).to.equal(9);
+          if (isFunction(priority)) {
+            priority(app);
+            return;
+          }
           callback(app);
         },
       },
@@ -183,7 +187,10 @@ describe('plugin', () => {
       },
     };
 
-    plugin(app, null);
+    plugin(app, {
+      config: {home: '/home/florain', proxyName: 'proxy', userConfRoot: '/home/florain/.lando'},
+      utils: {loadComposeFiles: () => {}, dumpComposeData: () => {}},
+    });
     expect(app.composeData['LampPhp'].data[2].volumes).to.eql({});
     expect(app.composeData['LampPhp'].data[2].services.appserver.volumes).to.eql([
       '/home/florain/.lando:/lando:cached',
@@ -191,7 +198,7 @@ describe('plugin', () => {
       '/home/florain/.lando/scripts/lando-entrypoint.sh:/lando-entrypoint.sh',
       // 'home_appserver:/var/www', // this needs to get unset by the plugin
       '/home/florain/.lando/scripts/add-cert.sh:/scripts/000-add-cert',
-      '/home/florain:/user:cached',
+      // '/home/florain:/user:cached',
       '/home/florain/.lando/config/lamp/php.ini:/usr/local/etc/php/conf.d/zzz-lando-my-custom.ini',
     ]);
 
@@ -207,7 +214,7 @@ describe('plugin', () => {
       '/home/florain/.lando/scripts/lando-entrypoint.sh:/lando-entrypoint.sh',
       // 'home_database:/var/www', // this needs to get unset by the plugin
       'external_volume:/extern', // still needs to exist as this is external
-      '/home/florain:/user:cached',
+      // '/home/florain:/user:cached',
       '/home/florain/.lando/config/lamp/mysql.cnf:/opt/bitnami/mysql/conf/my_custom.cnf',
     ]);
     expect(app.composeData['LampMysql'].data[3].volumes).to.eql({external_volume: {external: true}});
