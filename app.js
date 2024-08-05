@@ -27,7 +27,8 @@ const removeNamedVolume = (composeDataIn, home, userConfRoot) => {
             _.startsWith(value, namedVolume + ':') ||
             value.source === namedVolume ||
             _.startsWith(value, '/var/run/docker.sock:') ||
-            (!_.startsWith(value, userConfRoot) && _.startsWith(value, home)),
+            (!_.startsWith(value, userConfRoot) && _.startsWith(value, home)) ||
+            !_.includes(value, ':'),
           );
         });
       });

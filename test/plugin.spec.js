@@ -196,6 +196,12 @@ describe('plugin', () => {
     };
 
     plugin(app, lando);
+
+    expect(app.composeData['LampPhp'].data[0].services.appserver.volumes).to.eql([
+      // '/usr/local/bin',
+      '/home/florain/.lando/config/lamp-php/default-ssl.conf:/etc/apache2/sites-enabled/000-default.conf',
+      '/home/florain/.lando/config/lamp-php/php.ini:/usr/local/etc/php/conf.d/xxx-lando-default.ini',
+    ]);
     expect(app.composeData['LampPhp'].data[2].volumes).to.eql({});
     expect(app.composeData['LampPhp'].data[2].services.appserver.volumes).to.eql([
       '/home/florain/.lando:/lando:cached',
