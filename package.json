@@ -1,7 +1,7 @@
 {
   "name": "@florianpat/lando-plugin-named-volume-removal",
   "description": "A lando plugins which removes named volumes from the docker compose file to be compatible with bitbucket pipelines",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": "Florian Patruck @florianPat",
   "keywords": [
     "lando",
