@@ -9,12 +9,28 @@ const plugin = require('../app');
 
 describe('plugin', () => {
   it('should handle the post init event correctly', () => {
+    let calledCount = 0;
+
     const app = {
       events: {
         on: (event, priority, callback) => {
-          expect(event).to.equal('post-init');
-          expect(priority).to.equal(9);
+          switch (calledCount) {
+            case 0:
+              expect(event).to.equal('pre-init');
+              break;
+            case 1:
+              expect(event).to.equal('post-init');
+              expect(priority).to.equal(9);
+              break;
+            default:
+              throw new Error('Called to often!');
+              break;
+          }
+          if (typeof priority === 'function') {
+            callback = priority;
+          }
           callback(app);
+          ++calledCount;
         },
       },
       composeData: {
@@ -191,7 +207,12 @@ describe('plugin', () => {
           callback({project: 'proxy', compose: []});
         },
       },
-      config: {home: '/home/florain', proxyName: 'proxy', userConfRoot: '/home/florain/.lando'},
+      config: {
+        home: '/home/florain',
+        proxyName: 'proxy',
+        userConfRoot: '/home/florain/.lando',
+        appEnv: {LANDO_HOST_UID: 'lando', LANDO_HOST_GID: 'lando'},
+      },
       utils: {loadComposeFiles: () => {}, dumpComposeData: () => {}},
     };
 

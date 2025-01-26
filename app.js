@@ -37,6 +37,11 @@ const removeNamedVolume = (composeDataIn, home, userConfRoot) => {
 };
 
 module.exports = (app, lando) => {
+  app.events.on('pre-init', () => {
+    lando.config.appEnv.LANDO_HOST_UID = 1000;
+    lando.config.appEnv.LANDO_HOST_GID = 1000;
+  });
+
   // 9 because after all the plugins and core stuff and before the lando info generation
   // note that the proxy plugin loads itself into the mix in 'pre-start'... thats ok through, because it does not use any named volumes
   app.events.on('post-init', 9, () => {
